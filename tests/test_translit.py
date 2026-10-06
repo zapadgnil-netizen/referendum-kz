@@ -40,3 +40,8 @@ def test_distinct_names_keep_distinct_keys():
 def test_empty_and_none():
     assert match_key("") == ""
     assert match_key(None) == ""
+
+
+def test_word_boundaries_are_ascii_only_so_the_browser_port_agrees():
+    # An unmapped letter next to "ye": only an ASCII-aware \b sees a word start here.
+    assert match_key("中ye") == "e"

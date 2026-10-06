@@ -51,3 +51,10 @@ def test_classify_legal_entity_vs_individual():
 
 def test_classify_invalid_is_none():
     assert classify("100140526018") is None
+
+
+def test_non_ascii_digits_are_not_digits():
+    # Arabic-Indic digits satisfy Python's \d and int(); a BIN must be ASCII 0-9 only.
+    assert normalize("١٠٠١٤٠٥٢٦٠١٩") is None
+    assert not is_valid("١٠٠١٤٠٥٢٦٠١٩")
+    assert check_digit("١٠٠١٤٠٥٢٦٠١") is None

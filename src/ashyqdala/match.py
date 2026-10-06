@@ -8,11 +8,11 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from difflib import SequenceMatcher
 from enum import Enum
 
 from . import bin as kzbin
 from .names import parse_company_name
+from .similarity import ratio
 
 MATCH_THRESHOLD = 0.92
 REVIEW_THRESHOLD = 0.75
@@ -42,10 +42,8 @@ class MatchResult:
 def _name_similarity(key_a: str, key_b: str) -> float:
     if not key_a or not key_b:
         return 0.0
-    direct = SequenceMatcher(None, key_a, key_b).ratio()
-    sorted_words = SequenceMatcher(
-        None, " ".join(sorted(key_a.split())), " ".join(sorted(key_b.split()))
-    ).ratio()
+    direct = ratio(key_a, key_b)
+    sorted_words = ratio(" ".join(sorted(key_a.split())), " ".join(sorted(key_b.split())))
     return max(direct, sorted_words)
 
 

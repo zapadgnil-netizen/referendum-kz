@@ -23,12 +23,12 @@ def normalize(value: str | None) -> str | None:
     if not value:
         return None
     digits = re.sub(r"[\s\-]", "", value)
-    return digits if re.fullmatch(r"\d{12}", digits) else None
+    return digits if re.fullmatch(r"[0-9]{12}", digits) else None
 
 
 def check_digit(first_eleven: str) -> int | None:
     """Check digit for an 11-digit prefix; None when no valid digit exists for that prefix."""
-    if not re.fullmatch(r"\d{11}", first_eleven or ""):
+    if not re.fullmatch(r"[0-9]{11}", first_eleven or ""):
         return None
     digits = [int(c) for c in first_eleven]
     remainder = sum(d * w for d, w in zip(digits, _FIRST_WEIGHTS)) % 11

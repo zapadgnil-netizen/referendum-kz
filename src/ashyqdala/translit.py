@@ -48,7 +48,7 @@ def match_key(text: str | None) -> str:
     s = "".join(c for c in s if not unicodedata.combining(c))
     s = "".join(_CYRILLIC.get(c, c) for c in s)
     for pattern, repl in _LATIN_COLLAPSE:
-        s = re.sub(pattern, repl, s)
+        s = re.sub(pattern, repl, s, flags=re.ASCII)  # ASCII \b so the JS port agrees
     s = re.sub(r"[^a-z0-9]+", " ", s).strip()
     s = re.sub(r"(.)\1+", r"\1", s)  # Kazakhstanskii / Kazakhstanski, Aleks / Alekss
     return re.sub(r"\s+", " ", s)
