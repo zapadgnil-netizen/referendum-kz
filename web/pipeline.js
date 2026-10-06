@@ -220,7 +220,8 @@
           evidence: stale.map(s => s.id), checkNext: 'Treat anything from these sources as possibly changed.', falsePositive: '' });
       }
       const order = { high: 0, medium: 1, info: 2 };
-      flags.sort((a, b) => (a.status === b.status ? 0 : a.status === 'confirmed' ? -1 : 1) || order[a.severity] - order[b.severity] || b.points - a.points);
+      const rank = f => (f.status === 'confirmed' && f.points > 0 ? 0 : f.status === 'unconfirmed' ? 1 : 2);
+      flags.sort((a, b) => rank(a) - rank(b) || order[a.severity] - order[b.severity] || b.points - a.points);
       const total = Math.min(100, flags.filter(f => f.status === 'confirmed').reduce((s, f) => s + f.points, 0));
       const pending = flags.filter(f => f.status === 'unconfirmed').reduce((s, f) => s + (f.pointsIfConfirmed || 0), 0);
       return { flags, score: { total, band: bandOf(total), pendingIfConfirmed: pending, bandIfConfirmed: bandOf(Math.min(100, total + pending)) } };

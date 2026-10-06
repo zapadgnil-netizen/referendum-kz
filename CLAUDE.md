@@ -6,14 +6,19 @@ Wedge buyer: KYB / compliance teams at foreign banks and investors. Full spec: `
 
 ## Commands
 - Tests: `python -m pytest -q` (install with `pip install -e ".[dev]"`)
-- Demo page: `PYTHONPATH=src python demo/build_demo.py` writes `demo/index.html` (synthetic data, real matcher)
+- Regenerate data: `PYTHONPATH=src python -m ashyqdala.synth web/data.json` (a test fails if it is stale)
+- Build the app: `python web/build.py` writes the single page `web/dist/index.html`
+- Click-through test in a real browser: `python tools/smoke.py` (needs playwright and Chromium)
+- Browser unit tests: `node --test web/tests/pipeline.test.js` (also run by pytest)
 - Matcher quality gate: `PYTHONPATH=src python -m ashyqdala.evaluate data/gold/pairs.jsonl`
 
 ## Layout
 - `src/ashyqdala/` entity resolution: `bin.py` (BIN/IIN check digit), `translit.py` (match keys),
   `names.py` (legal forms), `match.py` (decision), `evaluate.py` (gold-set harness)
 - `data/gold/pairs.jsonl` labelled pairs. All names and BINs are synthetic.
-- `src/ashyqdala/demo.py` + `demo/` synthetic report and its HTML page. Invented companies only.
+- `src/ashyqdala/synth.py` deterministic synthetic world (invented companies, hidden ground truth)
+- `web/` the MVP app: `engine.js` (JS port of the matcher, parity-tested against Python), `pipeline.js` (linking, flags,
+  search, events), `app.js` + `app.css` (early-2000s portal UI), `build.py`, `data.json`
 - `docs/` spec, data sources, open legal questions
 - `.claude/skills/` project skills (see below)
 
@@ -32,5 +37,6 @@ Wedge buyer: KYB / compliance teams at foreign banks and investors. Full spec: `
 from the code and spec, not yet pressure-tested with subagents.
 
 ## Status
-Entity-resolution core with a 35-pair gold set, plus a demo report. Nothing ingests real data yet.
+Entity-resolution core, a synthetic dataset and a working browser MVP (search, reports, watchlist with a simulated
+clock, review queue, compare, matcher QA). Nothing ingests real data yet.
 Unverified: the BIN check-digit algorithm and BIN-vs-IIN heuristic against an official sample.
