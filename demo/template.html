@@ -1,0 +1,300 @@
+<title>Ashyq Dala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Manrope:wght@600;800&display=swap">
+<style>
+/* Concept: a compliance dossier. Summary and score first, then evidence, then the matcher's working.
+   Palette from the steppe flag (sky teal, sun gold) kept to accents; semantic colours are separate. */
+:root {
+  --bg: #EEF2EF; --surface: #FFFFFF; --surface-2: #F5F8F6; --ink: #14201C; --ink-2: #4B5A55;
+  --line: #D5DDD8; --accent: #0A6F83; --accent-ink: #FFFFFF; --accent-soft: #DCEFF3; --sun: #B07D00;
+  --high: #B3261E; --high-soft: #FBE4E1; --med: #8F5400; --med-soft: #FBEBD0;
+  --good: #1B6B47; --good-soft: #DDF0E5; --info: #3C4E66; --info-soft: #E4E9EF;
+  --font-display: "Manrope", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1513; --surface: #141F1C; --surface-2: #1A2824; --ink: #E5EEEA; --ink-2: #9BAEA7;
+    --line: #2A3A35; --accent: #4FC3D8; --accent-ink: #06222A; --accent-soft: #123940; --sun: #E5B73B;
+    --high: #FF8A80; --high-soft: #3A1C1A; --med: #F2B45B; --med-soft: #3A2A10;
+    --good: #6CD39C; --good-soft: #123123; --info: #A9B8CC; --info-soft: #1E2733; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1513; --surface: #141F1C; --surface-2: #1A2824; --ink: #E5EEEA; --ink-2: #9BAEA7;
+  --line: #2A3A35; --accent: #4FC3D8; --accent-ink: #06222A; --accent-soft: #123940; --sun: #E5B73B;
+  --high: #FF8A80; --high-soft: #3A1C1A; --med: #F2B45B; --med-soft: #3A2A10;
+  --good: #6CD39C; --good-soft: #123123; --info: #A9B8CC; --info-soft: #1E2733; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 15px/1.55 var(--font-body); padding-inline: 16px; padding-block: 20px 56px; }
+.wrap { max-width: 1120px; margin-inline: auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.6rem, 4.2vw, 2.4rem); font-weight: 800; line-height: 1.12; }
+h2 { font-size: 1.15rem; font-weight: 800; }
+h3 { font-size: 1rem; font-weight: 800; }
+p { margin: 0; }
+.mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.eyebrow { font-size: 0.72rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+.muted { color: var(--ink-2); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+.topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+.sun { width: 22px; height: 22px; border-radius: 50%; background: var(--sun); box-shadow: 0 0 0 4px var(--accent-soft); flex: none; }
+.demo-note { font-size: 0.82rem; background: var(--med-soft); color: var(--med); padding: 6px 12px; border-radius: 999px; font-weight: 500; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+.main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.rail { display: flex; flex-direction: column; gap: 16px; position: sticky; top: env(safe-area-inset-top, 0px); padding-top: 0; min-width: 0; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } .rail { position: static; order: -1; } }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.panel > header { display: flex; flex-direction: column; gap: 4px; }
+.panel > header p { color: var(--ink-2); font-size: 0.9rem; max-width: 62ch; }
+
+.entity { gap: 12px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 0; }
+.facts div { display: flex; flex-direction: column; min-width: 0; }
+.facts dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); font-weight: 600; }
+.facts dd { margin: 0; overflow-wrap: anywhere; }
+.summary { font-size: 1.02rem; max-width: 66ch; }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.high { background: var(--high-soft); color: var(--high); }
+.pill.med { background: var(--med-soft); color: var(--med); }
+.pill.info { background: var(--info-soft); color: var(--info); }
+.pill.dashed { background: transparent; color: var(--med); border: 1px dashed var(--med); }
+.pill.rejected { background: var(--surface-2); color: var(--ink-2); border-color: var(--line); }
+
+.flags { display: flex; flex-direction: column; gap: 10px; }
+.flag { border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
+.flag.unconfirmed { border-style: dashed; border-color: var(--med); background: transparent; }
+.flag summary { list-style: none; cursor: pointer; padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; align-items: start; }
+.flag summary::-webkit-details-marker { display: none; }
+.flag .title { font-family: var(--font-display); font-weight: 800; font-size: 0.98rem; }
+.flag .tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+.flag .text { grid-column: 1 / -1; color: var(--ink); max-width: 66ch; }
+.flag .more { padding: 0 16px 16px; display: grid; gap: 10px; font-size: 0.9rem; }
+.flag .more h4 { margin: 0 0 2px; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-family: var(--font-data); font-size: 0.76rem; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+
+.probe { display: flex; flex-wrap: wrap; gap: 8px; }
+.probe button { border: 1px solid var(--line); background: var(--surface-2); border-radius: 8px; padding: 8px 12px; text-align: left; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.probe button small { font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+.probe button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.verdict { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 8px; background: var(--surface-2); }
+.verdict .typed { font-size: 1.05rem; overflow-wrap: anywhere; }
+.verdict .line { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+
+.tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 12px; font-size: 0.84rem; }
+.filter[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; min-width: 780px; font-size: 0.86rem; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); background: var(--surface-2); font-weight: 600; position: sticky; top: 0; }
+tr:last-child td { border-bottom: 0; }
+td.num { text-align: right; }
+.reasons { color: var(--ink-2); font-size: 0.8rem; }
+
+.diff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .diff { grid-template-columns: minmax(0, 1fr); } }
+.snap { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: grid; gap: 6px; background: var(--surface-2); }
+.snap.now { border-color: var(--accent); }
+.changed { background: var(--med-soft); color: var(--med); padding: 0 6px; border-radius: 4px; font-weight: 500; }
+
+.score-num { font-family: var(--font-display); font-weight: 800; font-size: 3rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.score-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.meter { position: relative; height: 12px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--line); overflow: hidden; }
+.meter .fill { position: absolute; inset: 0 auto 0 0; background: var(--high); }
+.meter .pending { position: absolute; inset: 0 auto 0 0; background: repeating-linear-gradient(135deg, var(--med) 0 4px, transparent 4px 8px); opacity: 0.85; }
+.ticks { position: relative; height: 16px; font-size: 0.7rem; color: var(--ink-2); }
+.ticks span { position: absolute; transform: translateX(-50%); }
+.ticks span:first-child { transform: none; } .ticks span:last-child { transform: translateX(-100%); }
+.contrib { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 0.86rem; }
+.contrib li { display: flex; justify-content: space-between; gap: 12px; }
+.switch { display: flex; gap: 10px; align-items: flex-start; font-size: 0.88rem; cursor: pointer; }
+.switch input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent); flex: none; }
+
+.src { display: flex; justify-content: space-between; gap: 10px; align-items: center; font-size: 0.88rem; padding-block: 6px; border-bottom: 1px solid var(--line); }
+.src:last-of-type { border-bottom: 0; }
+.gap { font-size: 0.84rem; color: var(--med); background: var(--med-soft); border-radius: 6px; padding: 8px 10px; }
+.foot { font-size: 0.82rem; color: var(--ink-2); max-width: 80ch; }
+@media (max-width: 640px) { .flag summary { grid-template-columns: minmax(0, 1fr); } .flag .tags { justify-content: flex-start; } }
+@media (prefers-reduced-motion: no-preference) { .meter .fill, .meter .pending { transition: width .35s ease; } }
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><span class="sun" aria-hidden="true"></span>Ashyq Dala</div>
+    <div class="demo-note">Demo: invented companies and records. The matcher is the real one.</div>
+  </div>
+
+  <section class="panel entity" id="entity"></section>
+
+  <div class="layout">
+    <div class="main">
+      <section class="panel" id="flags-panel"></section>
+      <section class="panel" id="probe-panel"></section>
+      <section class="panel" id="records-panel"></section>
+      <section class="panel" id="archive-panel"></section>
+    </div>
+    <aside class="rail">
+      <section class="panel" id="score-panel"></section>
+      <section class="panel" id="coverage-panel"></section>
+    </aside>
+  </div>
+
+  <p class="foot">Matching ran when this page was built, using the project's Python matcher on the records above. Typing a new name needs the backend, which is not built yet. Flag thresholds and score weights are placeholders for this demo, not calibrated values.</p>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const $ = id => document.getElementById(id);
+const fmtDate = iso => new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const sevPill = s => `<span class="pill ${s === "high" ? "high" : s === "medium" ? "med" : "info"}">${s === "info" ? "Notice" : s[0].toUpperCase() + s.slice(1) + " severity"}</span>`;
+const decisionPill = r => {
+  if (r.decision === "match") return r.confidence === "confirmed"
+    ? '<span class="pill good">Linked · BIN confirmed</span>'
+    : '<span class="pill dashed">Linked · name only</span>';
+  if (r.decision === "review") return '<span class="pill info">Needs a human</span>';
+  return '<span class="pill rejected">Kept apart</span>';
+};
+const confirmedFlags = () => D.flags.filter(f => f.status === "confirmed" && f.points > 0);
+const unconfirmed = () => D.flags.filter(f => f.status === "unconfirmed");
+
+function renderEntity() {
+  const e = D.entity, t = D.totals, c = confirmedFlags().length, u = unconfirmed().length;
+  const lead = D.flags.find(f => f.id === "tender_headcount");
+  $("entity").innerHTML = `
+    <div class="eyebrow">Counterparty report · ${fmtDate(D.report_date)}</div>
+    <h1>${esc(e.name)}</h1>
+    <dl class="facts">
+      <div><dt>BIN</dt><dd class="mono">${esc(e.bin)}</dd></div>
+      <div><dt>Owner</dt><dd>${esc(e.owner)}</dd></div>
+      <div><dt>Employees</dt><dd class="mono">${e.employees}</dd></div>
+      <div><dt>Same-owner companies</dt><dd>${e.affiliates.map(esc).join(", ")}</dd></div>
+    </dl>
+    <p class="summary">${c} confirmed risk indicators${u ? ` and ${u} that cannot be confirmed yet` : ""}. ${lead ? esc(lead.text) : ""}
+    Every figure below links back to the records it came from.</p>`;
+}
+
+function renderFlags() {
+  const items = D.flags.map((f, i) => {
+    const status = f.status === "confirmed"
+      ? '<span class="pill good">Confirmed by BIN</span>'
+      : '<span class="pill dashed">Unconfirmed</span>';
+    return `<details class="flag ${f.status}" ${i === 0 ? "open" : ""}>
+      <summary>
+        <span class="title">${esc(f.title)}</span>
+        <span class="tags">${sevPill(f.severity)}${f.severity !== "info" ? status : ""}</span>
+        <span class="text">${esc(f.text)}</span>
+      </summary>
+      <div class="more">
+        <div><h4>Evidence</h4><div class="chips">${f.evidence.map(x => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+        <div><h4>Check next</h4><p>${esc(f.check_next)}</p></div>
+        ${f.false_positive ? `<div><h4>How this can be a false alarm</h4><p>${esc(f.false_positive)}</p></div>` : ""}
+      </div></details>`;
+  }).join("");
+  $("flags-panel").innerHTML = `<header><h2>Risk indicators</h2>
+    <p>These describe what the records show. They are not findings of wrongdoing.</p></header>
+    <div class="flags">${items}</div>`;
+}
+
+let probeIdx = 2;
+function renderProbe() {
+  const buttons = D.spellings.map((s, i) =>
+    `<button type="button" data-i="${i}" aria-pressed="${i === probeIdx}"><small>${esc(s.label)}</small><span>${esc(s.text)}</span></button>`).join("");
+  const s = D.spellings[probeIdx];
+  const verdict = s.decision === "match"
+    ? '<span class="pill good">Same company</span>'
+    : s.decision === "review" ? '<span class="pill info">Possibly different: sent to a human</span>'
+    : '<span class="pill rejected">Different company</span>';
+  $("probe-panel").innerHTML = `<header><h2>One company, many spellings</h2>
+    <p>Registries write the same company in Russian, Kazakh and Latin, with different legal-form markers. Pick a spelling to see what the matcher decides when it has only the name.</p></header>
+    <div class="probe" role="group" aria-label="Spellings to try">${buttons}</div>
+    <div class="verdict" aria-live="polite">
+      <div class="typed">${esc(s.text)}</div>
+      <div class="line">${verdict}<span class="mono">score ${s.score.toFixed(2)}</span></div>
+      <div class="reasons mono">${s.reasons.map(esc).join(" · ")}</div>
+    </div>`;
+  $("probe-panel").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { probeIdx = +b.dataset.i; renderProbe(); }));
+}
+
+let filter = "calls";
+const filterDefs = [
+  ["calls", "Judgement calls", r => r.decision !== "match" || r.confidence === "name_only"],
+  ["all", "All", () => true],
+  ["confirmed", "Linked by BIN", r => r.decision === "match" && r.confidence === "confirmed"],
+  ["name_only", "Linked by name only", r => r.decision === "match" && r.confidence === "name_only"],
+  ["review", "Needs a human", r => r.decision === "review"],
+  ["rejected", "Kept apart", r => r.decision === "no_match"],
+];
+function renderRecords() {
+  const srcLabel = Object.fromEntries(D.sources.map(s => [s.id, s.label]));
+  const active = filterDefs.find(f => f[0] === filter)[2];
+  const rows = D.records.filter(active).map(r => `<tr>
+      <td>${esc(srcLabel[r.source])}<div class="mono muted">${esc(r.id)}</div></td>
+      <td>${esc(r.name)}<div class="muted">${esc(r.detail)}</div></td>
+      <td class="mono">${r.bin ? esc(r.bin) : "none"}</td>
+      <td>${decisionPill(r)}</td>
+      <td class="num mono">${r.score.toFixed(2)}</td>
+      <td class="reasons mono">${r.reasons.map(esc).join(" · ")}</td></tr>`).join("");
+  const filters = filterDefs.map(([k, label, fn]) =>
+    `<button type="button" class="filter" data-k="${k}" aria-pressed="${k === filter}">${label} ${D.records.filter(fn).length}</button>`).join("");
+  $("records-panel").innerHTML = `<header><h2>${D.totals.records_in} records came in. Here is what the matcher did.</h2>
+    <p>Two valid BINs settle a match either way. Without BINs the matcher compares names, and anything it is not sure about goes to a person. A numbered sibling with a different BIN is never counted. The list opens on the judgement calls; the BIN-confirmed rows are one tap away.</p></header>
+    <div class="tools" role="group" aria-label="Filter records">${filters}</div>
+    <div class="scroll"><table><thead><tr><th>Source</th><th>Name as written</th><th>BIN</th><th>Decision</th><th class="num">Score</th><th>Why</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  $("records-panel").querySelectorAll(".filter").forEach(b => b.addEventListener("click", () => { filter = b.dataset.k; renderRecords(); }));
+}
+
+function renderArchive() {
+  const [a, b] = D.snapshots;
+  const card = (s, now) => `<div class="snap ${now ? "now" : ""}">
+      <div class="eyebrow">${now ? "Version on the portal today" : "Earlier version, kept in our archive"}</div>
+      <div>Fetched ${fmtDate(s.fetched)}</div>
+      <div>Owner: <span class="${now ? "changed" : ""}">${esc(s.owner)}</span></div>
+      <div class="mono muted">content hash ${esc(s.content_hash)}</div></div>`;
+  $("archive-panel").innerHTML = `<header><h2>What the portal no longer shows</h2>
+    <p>Government sites edit records in place. We keep every fetched version, so a change stays visible after the source overwrites it.</p></header>
+    <div class="diff">${card(a, false)}${card(b, true)}</div>`;
+}
+
+let assumeConfirmed = false;
+function renderScore() {
+  const s = D.score;
+  const total = s.total + (assumeConfirmed ? s.pending_if_confirmed : 0);
+  const band = total >= 50 ? "Elevated" : total >= 25 ? "Moderate" : "Low";
+  const contribs = confirmedFlags().map(f => `<li><span>${esc(f.title)}</span><span class="mono">+${f.points}</span></li>`);
+  if (assumeConfirmed) unconfirmed().forEach(f => contribs.push(`<li><span>${esc(f.title)} (assumed)</span><span class="mono">+${f.points_if_confirmed}</span></li>`));
+  $("score-panel").innerHTML = `<header><div class="eyebrow">Counterparty risk</div></header>
+    <div class="score-row"><span class="score-num" id="score-num">${total}</span><span class="pill ${total >= 50 ? "high" : "med"}">${band}</span></div>
+    <div><div class="meter" role="img" aria-label="Score ${total} out of ${s.scale}">
+      <div class="pending" style="width:${assumeConfirmed ? total : 0}%"></div>
+      <div class="fill" style="width:${s.total}%"></div></div>
+      <div class="ticks" aria-hidden="true"><span style="left:0">0</span><span style="left:25%">25</span><span style="left:50%">50</span><span style="left:100%">100</span></div></div>
+    <ul class="contrib">${contribs.join("")}</ul>
+    <label class="switch" for="assume"><input id="assume" type="checkbox" ${assumeConfirmed ? "checked" : ""}>
+      <span>Assume the unconfirmed court cases are confirmed (shows what a BIN match would add)</span></label>
+    <p class="muted" style="font-size:.78rem">${esc(s.note)}</p>`;
+  $("assume").addEventListener("change", e => { assumeConfirmed = e.target.checked; renderScore(); });
+}
+
+function renderCoverage() {
+  const c = D.coverage;
+  const rows = D.sources.map(s => `<div class="src"><span>${esc(s.label)}<div class="muted" style="font-size:.78rem">Refreshed ${fmtDate(s.fetched)}</div></span>
+    <span class="pill ${s.stale ? "med" : "good"}">${s.stale ? s.age_days + " days old" : "Current"}</span></div>`).join("");
+  $("coverage-panel").innerHTML = `<header><h2>Coverage</h2><p>${c.checked} of ${c.total} source types checked.</p></header>
+    <div>${rows}</div><div class="gap">${esc(c.gap)} A low score here does not mean the company is clean.</div>`;
+}
+
+renderEntity(); renderFlags(); renderProbe(); renderRecords(); renderArchive(); renderScore(); renderCoverage();
+</script>

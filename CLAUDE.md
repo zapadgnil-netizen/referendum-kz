@@ -6,12 +6,14 @@ Wedge buyer: KYB / compliance teams at foreign banks and investors. Full spec: `
 
 ## Commands
 - Tests: `python -m pytest -q` (install with `pip install -e ".[dev]"`)
+- Demo page: `PYTHONPATH=src python demo/build_demo.py` writes `demo/index.html` (synthetic data, real matcher)
 - Matcher quality gate: `PYTHONPATH=src python -m ashyqdala.evaluate data/gold/pairs.jsonl`
 
 ## Layout
 - `src/ashyqdala/` entity resolution: `bin.py` (BIN/IIN check digit), `translit.py` (match keys),
   `names.py` (legal forms), `match.py` (decision), `evaluate.py` (gold-set harness)
 - `data/gold/pairs.jsonl` labelled pairs. All names and BINs are synthetic.
+- `src/ashyqdala/demo.py` + `demo/` synthetic report and its HTML page. Invented companies only.
 - `docs/` spec, data sources, open legal questions
 - `.claude/skills/` project skills (see below)
 
@@ -30,5 +32,5 @@ Wedge buyer: KYB / compliance teams at foreign banks and investors. Full spec: `
 from the code and spec, not yet pressure-tested with subagents.
 
 ## Status
-Entity-resolution core with a 35-pair gold set. Nothing ingests real data yet.
+Entity-resolution core with a 35-pair gold set, plus a demo report. Nothing ingests real data yet.
 Unverified: the BIN check-digit algorithm and BIN-vs-IIN heuristic against an official sample.
