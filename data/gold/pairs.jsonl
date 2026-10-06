@@ -1,0 +1,35 @@
+{"a": {"name": "ТОО «Алтын Дала»"}, "b": {"name": "Altyn Dala LLP"}, "same": true, "note": "cyr vs latin, form moved"}
+{"a": {"name": "ТОО «Алтын Дала»"}, "b": {"name": "TOO Altyn Dala"}, "same": true, "note": "latin look-alike TOO"}
+{"a": {"name": "ЖШС «Алтын Дала»"}, "b": {"name": "ТОО «Алтын Дала»"}, "same": true, "note": "kazakh vs russian form marker"}
+{"a": {"name": "ТОО «Қызыл Тау»"}, "b": {"name": "Kyzyl Tau LLP"}, "same": true, "note": "kazakh letters vs latin"}
+{"a": {"name": "ТОО «Қызыл Тау»"}, "b": {"name": "ТОО «Кызыл Тау»"}, "same": true, "note": "қ vs к"}
+{"a": {"name": "Kyzyl Tau LLP"}, "b": {"name": "KYZYL-TAU TOO"}, "same": true, "note": "case + hyphen"}
+{"a": {"name": "АО «Жетісу Энерго»"}, "b": {"name": "Zhetisu Energo JSC"}, "same": true, "note": "jsc cyr vs latin"}
+{"a": {"name": "АО «Жетісу Энерго»"}, "b": {"name": "АҚ «Жетісу Энерго»"}, "same": true, "note": "ао vs ақ"}
+{"a": {"name": "ТОО «Нур Строй»"}, "b": {"name": "Nur Stroy LLP"}, "same": true, "note": "ой/oy"}
+{"a": {"name": "ТОО «Нур Строй»"}, "b": {"name": "ТОО «Нұр Строй»"}, "same": true, "note": "у vs ұ"}
+{"a": {"name": "ТОО «Сары Арка Транс»"}, "b": {"name": "Sary Arka Trans LLP"}, "same": true, "note": "three words"}
+{"a": {"name": "ТОО «Сары Арка Транс»"}, "b": {"name": "ТОО Транс Сары Арка"}, "same": true, "note": "word order"}
+{"a": {"name": "ТОО «Ертіс Агро»"}, "b": {"name": "Yertis Agro LLP"}, "same": true, "note": "initial Ye vs Е"}
+{"a": {"name": "ТОО «Ертіс Агро»"}, "b": {"name": "Ertis Agro TOO"}, "same": true, "note": "Е vs E"}
+{"a": {"name": "ТОО «Жайық Снаб»"}, "b": {"name": "Jaiyk Snab LLP"}, "same": true, "note": "ж vs j"}
+{"a": {"name": "ТОО «Жайық Снаб»"}, "b": {"name": "Zhaiyk Snab LLP"}, "same": true, "note": "ж vs zh"}
+{"a": {"name": "ТОО «Хан Тенгри Тур»"}, "b": {"name": "Khan Tengri Tur LLP"}, "same": true, "note": "х vs kh"}
+{"a": {"name": "ТОО «Ақ Орда Лоджистик»"}, "b": {"name": "Aq Orda Logistik LLP"}, "same": true, "note": "KNOWN LIMIT: loan word, Лоджистик vs Logistik (ж vs g); lands in REVIEW, not lost"}
+{"a": {"name": "ТОО «Алтын Дала»", "bin": "100140526019"}, "b": {"name": "ТОО «Дала Инвест Групп»", "bin": "100140526019"}, "same": true, "note": "rebrand, same BIN"}
+{"a": {"name": "Altyn Dala LLP", "bin": "100140815904"}, "b": {"name": "ТОО «Алтын Дала»", "bin": "100140815904"}, "same": true, "note": "spelling + same BIN"}
+{"a": {"name": "ТОО «Алтын Дала Строй»"}, "b": {"name": "ТОО «Алтын Дала Сервис»"}, "same": false, "note": "sibling companies, shared brand"}
+{"a": {"name": "ТОО «Алтын Дала-1»"}, "b": {"name": "ТОО «Алтын Дала-2»"}, "same": false, "note": "numbered siblings"}
+{"a": {"name": "ТОО «Нур Строй 1»"}, "b": {"name": "ТОО «Нур Строй 2»"}, "same": false, "note": "numbered siblings, separate digit"}
+{"a": {"name": "ТОО «Алтын Дала»"}, "b": {"name": "АО «Алтын Дала»"}, "same": false, "note": "same name, different legal form"}
+{"a": {"name": "ТОО «Қызыл Тау»"}, "b": {"name": "ТОО «Қызыл Тау Холдинг»"}, "same": false, "note": "parent/holding vs operating company"}
+{"a": {"name": "ТОО «Сары Арка Транс»"}, "b": {"name": "ТОО «Сары Арка Тур»"}, "same": false, "note": "one word differs"}
+{"a": {"name": "ТОО «Нур Строй»"}, "b": {"name": "ТОО «Нур Снаб»"}, "same": false, "note": "one word differs"}
+{"a": {"name": "ТОО «Ертіс Агро»"}, "b": {"name": "ТОО «Жайық Агро»"}, "same": false, "note": "shared generic word"}
+{"a": {"name": "ТОО «Алтын Дала»"}, "b": {"name": "ТОО «Алтын Жол»"}, "same": false, "note": "one word differs"}
+{"a": {"name": "АО «Жетісу Энерго»"}, "b": {"name": "АО «Жетісу Транзит»"}, "same": false, "note": "shared region word"}
+{"a": {"name": "ТОО «Хан Тенгри Тур»"}, "b": {"name": "ТОО «Хан Тенгри Трейд»"}, "same": false, "note": "same brand, different business"}
+{"a": {"name": "ТОО «Алтын Дала»", "bin": "100140830165"}, "b": {"name": "ТОО «Алтын Дала»", "bin": "100140613182"}, "same": false, "note": "identical names, different BIN"}
+{"a": {"name": "Kyzyl Tau LLP", "bin": "100140609134"}, "b": {"name": "ТОО «Қызыл Тау»", "bin": "100140909966"}, "same": false, "note": "same spelling, different BIN"}
+{"a": {"name": "ТОО «Алтын Дала»"}, "b": {"name": "АО «Қазақ Темір Жолы»"}, "same": false, "note": "unrelated"}
+{"a": {"name": "ТОО «Нур Строй»"}, "b": {"name": "Sary Arka Trans LLP"}, "same": false, "note": "unrelated, cross-script"}
