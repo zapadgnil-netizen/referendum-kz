@@ -54,8 +54,11 @@
     'щ': 'sh', 'ъ': '', 'ы': 'i', 'ь': '', 'э': 'e', 'ю': 'iu', 'я': 'ia',
   };
   const LATIN_PRE = { 'ş': 'sh', 'ç': 'ch', 'ı': 'i', 'ğ': 'g', 'ñ': 'n', 'ʼ': '', '’': '', "'": '' };
+  // A lone h becomes k, but not inside the sh/zh/ch digraphs. Done with a callback instead of a regex
+  // lookbehind, which older Safari and some WebViews cannot parse. Python's re lookbehind is equivalent.
+  const loneH = (m, offset, str) => (offset > 0 && 'szc'.includes(str[offset - 1]) ? m : 'k');
   const LATIN_COLLAPSE = [
-    [/\bye/g, 'e'], [/kh/g, 'k'], [/(?<![szc])h/g, 'k'], [/q/g, 'k'], [/x/g, 'ks'],
+    [/\bye/g, 'e'], [/kh/g, 'k'], [/h/g, loneH], [/q/g, 'k'], [/x/g, 'ks'],
     [/j/g, 'zh'], [/w/g, 'v'], [/y/g, 'i'], [/c(?=[eiy])/g, 'ts'],
   ];
   const casefold = s => s.toLowerCase().replace(/ß/g, 'ss');

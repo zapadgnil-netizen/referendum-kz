@@ -1,8 +1,21 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 <title>Ashyq Dala</title>
 <style>
 /*__CSS__*/
 </style>
 
+<noscript><p style="font:14px Verdana,sans-serif;padding:16px">Ashyq Dala needs JavaScript. Please turn it on and reload.</p></noscript>
+<script>
+window.addEventListener('error', function (e) {
+  if (document.getElementById('fatal')) return;
+  var d = document.createElement('div'); d.id = 'fatal';
+  d.setAttribute('style', 'font:13px Verdana,Arial,sans-serif;background:#FFE0E0;border:2px solid #B00000;color:#000;padding:12px 16px;margin:12px');
+  d.textContent = 'Ashyq Dala could not start: ' + (e.message || 'unknown error') + '. Please try a current Chrome, Edge, Firefox or Safari 16 or newer.';
+  document.body.insertBefore(d, document.body.firstChild);
+});
+</script>
 <div class="page">
   <div class="top">
     <a class="brand" href="#home" aria-label="Ashyq Dala home"><span class="sun" aria-hidden="true"></span><span><b>Ashyq Dala</b><small>Public-record checks on Kazakhstan companies</small></span></a>

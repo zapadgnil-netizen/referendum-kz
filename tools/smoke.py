@@ -10,7 +10,8 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGE = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else ROOT / "web" / "dist" / "index.html"
+ARG = sys.argv[1] if len(sys.argv) > 1 else str(ROOT / "web" / "dist" / "index.html")
+URL = ARG if ARG.startswith("http") else "file://" + str(Path(ARG).resolve())
 SHOTS = Path(sys.argv[2]) if len(sys.argv) > 2 else None
 fails, errors = [], []
 
@@ -34,7 +35,7 @@ def main():
         page = ctx.new_page()
         page.on("pageerror", lambda e: errors.append("pageerror: " + str(e)))
         page.on("console", lambda m: errors.append("console: " + m.text) if m.type == "error" else None)
-        url = "file://" + str(PAGE)
+        url = URL.rstrip("#")
 
         print("home")
         page.goto(url); page.wait_for_selector("#content h1")
@@ -132,6 +133,13 @@ def main():
         shot(page, "08-qa")
         page.click("#nav a:has-text('Help')"); page.wait_for_selector("h1:has-text('Help')")
         check("The matcher in six rules" in page.inner_text("#content"), "help page renders")
+
+        print("history")
+        page.goto(url + "#home"); page.wait_for_selector("#content h1")
+        page.click("#nav a:has-text('Help')"); page.wait_for_selector("h1:has-text('Help')")
+        page.click("#nav a:has-text('Compare')"); page.wait_for_selector("h1:has-text('Compare')")
+        page.go_back(); page.wait_for_selector("h1:has-text('Help')")
+        check("Help and method" in page.inner_text("#content h1"), "the browser Back button returns to the previous page")
 
         print("keyboard and persistence")
         page.goto(url + "#home"); page.wait_for_selector("#content h1")

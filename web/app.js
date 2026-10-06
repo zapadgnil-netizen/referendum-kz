@@ -16,6 +16,7 @@
   S.rules = Object.assign({}, DEFAULTS.rules, S.rules);
   if (!(S.clock >= DATA.meta.start && S.clock <= DATA.meta.end)) S.clock = DATA.meta.start;
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage may be unavailable */ } };
+  let focusSel = null;
   const ui = { sort: {}, open: { tender_headcount: true }, assume: false, flash: null, keepFlash: false, filters: {}, copy: null, cmpOpen: false };
 
   let cache = null;
@@ -64,8 +65,21 @@
   }
 
   // ---- routing -------------------------------------------------------------------------------
-  const route = () => { const p = (location.hash || '#home').slice(1).split('.'); return { page: p[0] || 'home', args: p.slice(1) }; };
-  const go = (...parts) => { const h = parts.join('.'); if (location.hash === '#' + h) render(); else location.hash = h; };
+  // The current page lives in `cur`. The URL hash mirrors it when the browser allows (Back button, bookmarks),
+  // but the app keeps working if an embedding viewer ignores hash changes.
+  let cur = (location.hash || '').slice(1) || 'home';
+  const route = () => { const p = cur.split('.'); return { page: p[0] || 'home', args: p.slice(1) }; };
+  function navigate(h, fromHash) {
+    h = h || 'home';
+    const changed = h !== cur;
+    cur = h;
+    if (!fromHash) { try { if (location.hash !== '#' + h) location.hash = h; } catch (e) { /* viewer may forbid it */ } }
+    if (changed) { if (!ui.keepFlash) ui.flash = null; ui.copy = null; focusSel = null; }
+    ui.keepFlash = false;
+    render();
+    if (changed) window.scrollTo(0, 0);
+  }
+  const go = (...parts) => navigate(parts.join('.'));
 
   // ---- derived data --------------------------------------------------------------------------
   const entityList = v => [...v.entities.values()].sort((a, b) => a.name.localeCompare(b.name) || a.bin.localeCompare(b.bin));
@@ -508,7 +522,6 @@
 
   // ---- render --------------------------------------------------------------------------------
   const PAGES = { home: pageHome, search: pageSearch, company: pageCompany, watchlist: pageWatchlist, queue: pageQueue, compare: pageCompare, qa: pageQA, help: pageHelp };
-  let focusSel = null;
   function render() {
     const r = route(), v = V();
     renderChrome(v, r);
@@ -566,6 +579,10 @@
   const selectorFor = el => { const parts = ['[data-act="' + el.dataset.act + '"]']; for (const k of ['bin', 'id', 'rec', 'entity', 'key', 'type', 'k', 'scope', 'table', 'col', 'days']) if (el.dataset[k] !== undefined) parts.push(`[data-${k}="${el.dataset[k]}"]`); return parts.join(''); };
 
   document.addEventListener('click', ev => {
+    const anchor = ev.target.closest('a[href^="#"]');
+    if (anchor && !anchor.dataset.act && anchor.getAttribute('href').length > 1 && !ev.ctrlKey && !ev.metaKey && !ev.shiftKey) {
+      ev.preventDefault(); navigate(anchor.getAttribute('href').slice(1)); return;
+    }
     const el = ev.target.closest('[data-act]');
     if (!el || el.tagName === 'SELECT' || el.type === 'checkbox') return;
     const a = el.dataset.act;
@@ -606,7 +623,7 @@
     if (ev.key === '/' && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) && !ev.ctrlKey && !ev.metaKey) { ev.preventDefault(); $('q').focus(); $('q').select(); }
   });
 
-  window.addEventListener('hashchange', () => { if (!ui.keepFlash) ui.flash = null; ui.keepFlash = false; ui.copy = null; focusSel = null; render(); window.scrollTo(0, 0); });
+  window.addEventListener('hashchange', () => { const h = location.hash.slice(1) || 'home'; if (h !== cur) navigate(h, true); });
 
   $('q').value = S.query || '';
   render();
