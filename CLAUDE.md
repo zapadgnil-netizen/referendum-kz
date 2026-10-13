@@ -41,5 +41,6 @@ from the code and spec, not yet pressure-tested with subagents.
 
 ## Status
 Entity-resolution core, a synthetic dataset and a working browser MVP (search, reports, watchlist with a simulated
-clock, review queue, compare, matcher QA). Nothing ingests real data yet.
+clock, review queue, compare, matcher QA). Concierge-first is approved (2026-10-13); `launch/` holds the tools for
+selling and delivering hand-made briefs. Nothing ingests real data yet.
 Unverified: the BIN check-digit algorithm and BIN-vs-IIN heuristic against an official sample.

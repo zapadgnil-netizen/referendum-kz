@@ -15,6 +15,7 @@ globalThis.__deskTest = {
   defaults, normalizeState, dateOK, safeURL, esc, parseCSV, doCSV,
   sameBIN, conflict, readiness, ready, reportBody, sampleCase, demoState,
   save, render, toggleDemo, importJSON, reportDialog, money, htmlDoc, quoteDoc, offerHTML, guardEdits,
+  filename, emailOK, looksIIN, documentRequest, renderHome, renderSettings, evidenceDialog,
   getState:()=>state, getOwn:()=>own, isDemo:()=>demo,
   setState:s=>{state=s;own=s;demo=false;selectedCase=s.cases[0]?.id||null;},
   setDemo:v=>{demo=v;}
@@ -299,6 +300,140 @@ test('Unsaved edits prevent export or modal changes until explicitly saved or di
   assert.match(h.getNode('#toast').textContent,/Save your edits/);
   assert.equal(h.api.guardEdits(true),true);
   assert.equal(form.dataset.dirty,undefined);
+});
+
+/* ---- Review fixes, 13 October 2026 ---- */
+const ownBackup=(api,overrides={})=>({type:'ashyq-dala-backup',dataset:'own',data:{...api.defaults(),...overrides}});
+const fileOf=obj=>({size:100,text:async()=>JSON.stringify(obj)});
+
+test('"Import request" refuses a backup file, so a stranger cannot replace the workspace',async()=>{
+  const {api}=harness();api.setState(stateFor(api));
+  const hostile=ownBackup(api,{settings:{...api.defaults().settings,email:'attacker@evil.example',paymentUrl:'https://attacker.example/pay'}});
+  await assert.rejects(()=>api.importJSON(fileOf(hostile),'request'),/request/i);
+  assert.equal(api.getState().leads.length,1);
+  assert.equal(api.getState().settings.paymentUrl,'');
+});
+
+test('"Restore backup" refuses an intake request and only accepts own-workspace backups',async()=>{
+  const {api}=harness();api.setState(stateFor(api));
+  await assert.rejects(()=>api.importJSON(fileOf({type:'ashyq-dala-intake',version:1,clientName:'X'}),'restore'),/backup/i);
+});
+
+test('Restore confirmation shows incoming and current email and payment link, and lead/case counts',async()=>{
+  const h=harness();const st=stateFor(h.api);st.settings.email='me@example.com';h.api.setState(st);
+  let asked='';h.context.confirm=m=>{asked=m;return false;};
+  const incoming=ownBackup(h.api,{settings:{...h.api.defaults().settings,email:'other@example.org',paymentUrl:'https://pay.example.org/x'}});
+  await h.api.importJSON(fileOf(incoming),'restore');
+  assert.match(asked,/other@example\.org/);assert.match(asked,/https:\/\/pay\.example\.org\/x/);
+  assert.match(asked,/me@example\.com/);assert.match(asked,/0 opportunit/);assert.match(asked,/1 opportunit/);
+  assert.equal(h.api.getState().settings.email,'me@example.com','Declining must keep the workspace.');
+});
+
+test('Filenames keep Cyrillic company names instead of collapsing to underscores',()=>{
+  const {api}=harness();
+  assert.equal(api.filename('ТОО Тест'),'ТОО_Тест');
+  assert.notEqual(api.filename('ТОО Альфа'),api.filename('ТОО Бета'));
+  assert.equal(api.filename('<>:'),'Brief');
+});
+
+test('Desk email check matches the public offer: query strings and spaces are rejected',()=>{
+  const {api}=harness();
+  for(const bad of ['me@example.com?bcc=evil%40x.com','a b@example.com','me@example','me@@example.com'])assert.equal(api.emailOK(bad),false,bad);
+  assert.equal(api.emailOK('first.last+kz@example.co.uk'),true);
+});
+
+test('A restored backup with an invalid receiving email does not keep it',()=>{
+  const {api}=harness();
+  const s=api.normalizeState({...api.defaults(),settings:{email:'me@example.com?bcc=evil%40x.com'}});
+  assert.equal(s.settings.email,'');
+});
+
+test('Client brief says whether a confirmed attribution rests on a BIN match or the name only',()=>{
+  const {api}=harness();
+  const bin=api.reportBody(caseRecord());
+  assert.match(bin,/Confirmed by analyst \(BIN match\)/);
+  const nameOnly=api.reportBody(caseRecord({sources:[sourceRecord({recordBin:'',reviewNote:'Name agrees with the supplied extract.'})]}));
+  assert.match(nameOnly,/Confirmed by analyst \(name only; no BIN in this record\)/);
+  assert.doesNotMatch(nameOnly,/BIN match\)/);
+});
+
+test('Document request asks counterparties to redact individuals\' IINs and home addresses',()=>{
+  const {api}=harness();api.setState(stateFor(api));
+  const t=api.documentRequest(caseRecord());
+  assert.match(t,/IIN/);assert.match(t,/home addresses/);
+  assert.doesNotMatch(t,/remove unrelated personal identifiers/);
+});
+
+test('Overview offer does not promise unconditional two-day delivery',()=>{
+  const {api}=harness();api.setState(stateFor(api));
+  const html=api.renderHome();
+  assert.doesNotMatch(html,/next step in 2 days/);
+  assert.match(html,/two business days once scope/);
+});
+
+test('IIN-looking numbers are flagged; BIN-looking and blank numbers are not',()=>{
+  const {api}=harness();
+  assert.equal(api.looksIIN('900101300123'),true,'fifth digit 3: individual');
+  assert.equal(api.looksIIN('123456789012'),false,'fifth digit 5: legal entity');
+  assert.equal(api.looksIIN(''),false);assert.equal(api.looksIIN('12345'),false);
+});
+
+test('Settings ask for the seller legal name, country and terms link',()=>{
+  const {api}=harness();const html=api.renderSettings();
+  for(const f of ['legalName','country','termsUrl'])assert.match(html,new RegExp('name="'+f+'"'));
+});
+
+test('Public offer export carries the seller identity and refuses to export without it',()=>{
+  const h=harness();const st=stateFor(h.api);st.settings.email='owner@example.com';h.api.setState(st);
+  h.getNode('#offer-template').textContent=Buffer.from('<html><script id="ad-config" type="application/json">{}</script></html>').toString('base64');
+  st.settings.legalName='Example Research LLC';st.settings.country='Kazakhstan';st.settings.termsUrl='https://example.com/terms';
+  const html=h.api.offerHTML();
+  assert.match(html,/Example Research LLC/);assert.match(html,/Kazakhstan/);assert.match(html,/https:\/\/example\.com\/terms/);
+  const s=h.api.normalizeState({...h.api.defaults(),settings:{legalName:'A',country:'B',termsUrl:'javascript:alert(1)'}});
+  assert.equal(s.settings.legalName,'A');assert.equal(s.settings.termsUrl,'');
+});
+
+test('The attribution note field is labelled as client-facing',()=>{
+  const h=harness();h.api.setState(stateFor(h.api));h.api.evidenceDialog();
+  assert.match(h.getNode('#dialog-body').innerHTML,/appears in the client brief/i);
+});
+
+/* ---- Public offer page script ---- */
+function offerHarness(){
+  const html=fs.readFileSync(path.join(__dirname,'..','src','offer.html'),'utf8');
+  const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+  let code=scripts[scripts.length-1][1];
+  const end=/\}\)\(\);\s*$/;assert.match(code,end);
+  code=code.replace(end,'globalThis.__offerTest={looksIIN,mailtoHref,emailBody};})();');
+  const nodes=new Map();const node=id=>{if(!nodes.has(id))nodes.set(id,nodeStub());return nodes.get(id)};
+  node('ad-config').textContent='{}';
+  const context={console,URL,Intl,JSON,Date,
+    document:{getElementById:node,querySelectorAll(){return [];},createElement:nodeStub,body:nodeStub(),title:''},
+    window:{matchMedia(){return {matches:false}}},navigator:{},setTimeout(){},Blob};
+  vm.createContext(context);vm.runInContext(code,context);return context.__offerTest;
+}
+
+test('Offer mailto keeps a literal @ in the recipient and encodes only the local part',()=>{
+  const o=offerHarness();
+  const href=o.mailtoHref('first+kz@example.com','Subj','Body');
+  assert.match(href,/^mailto:first%2Bkz@example\.com\?subject=Subj&body=Body$/);
+});
+
+test('Offer email body stays short: long requests drop the duplicated JSON and point to the downloaded file',()=>{
+  const o=offerHarness();
+  const req={clientName:'A',clientEmail:'a@example.com',company:'ТОО Тест',bin:'',goal:'Ж'.repeat(2500),deadline:''};
+  const body=o.emailBody(req,'Op');
+  assert.ok(encodeURIComponent(body).length<2000,'encoded body '+encodeURIComponent(body).length);
+  assert.match(body,/Ж{100}/,'the start of the question is kept');
+  assert.doesNotMatch(body,/"type": "ashyq-dala-intake"/);
+  assert.match(body,/download/i);
+  const small=o.emailBody({...req,goal:'Short goal'},'Op');
+  assert.match(small,/"type": "ashyq-dala-intake"/);
+});
+
+test('Offer flags IIN-looking numbers the same way as the desk',()=>{
+  const o=offerHarness();
+  assert.equal(o.looksIIN('900101300123'),true);assert.equal(o.looksIIN('123456789012'),false);assert.equal(o.looksIIN(''),false);
 });
 
 (async()=>{

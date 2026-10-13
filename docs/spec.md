@@ -18,6 +18,16 @@ Type a company, get a full picture in about 60 seconds.
 4. **Historical snapshots.** Government sites quietly edit or delete records. Our own archive gains
    value over time.
 
+## Concierge phase (current, approved 2026-10-13)
+Before the engine is sold, the service is sold by hand: one Kazakh legal entity, a short English brief with dated
+sources, USD 250 pilot (USD 125 deposit after scope, balance on delivery), target two business days after scope,
+sources, documents and deposit are confirmed. First buyers: equipment exporters and suppliers vetting a Kazakh buyer
+or distributor, then research and advisory firms buying bounded tasks. No risk score, no land records, no private
+financials, no individuals or individual entrepreneurs. Tooling lives in `launch/` (private Partner Desk, public offer,
+`launch/Launch_Plan.md`) and runs outside the matcher's precision gate: attribution is the analyst's, and briefs say
+whether each confirmed record rests on a BIN match or on the name only. The 60-second engine below is the later
+product, and the KYB buyer list below is its target, not the pilot's.
+
 ## Buyer (pick one first)
 1. **Foreign investors, banks, compliance teams doing KYB / due diligence on Kazakh counterparties.**
    Best wedge: Kazakhstan is a sanctions-evasion transit hub, so the need is real and report budgets

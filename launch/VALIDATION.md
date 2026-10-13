@@ -15,6 +15,25 @@ Prepared 6 October 2026 (America/Los_Angeles).
 Both built pages opened in headless Chromium at 1280px and 390px wide: no script errors, no horizontal scroll, and
 clicking through the desk's navigation produced no errors. Mail-app hand-off, downloads and printing are still untested.
 
+## Review and fixes (13 October 2026)
+
+Three parallel reviews (browser flows, security/privacy, project rules) found no blocking defects in the main flows.
+Fixed, each with a failing check first (`tests/core.cjs`, now 40 checks) and then re-run in headless Chromium:
+- Import request and Restore backup are separate; a backup disguised as a request is refused, and the restore
+  confirmation shows incoming vs current email, payment link and counts, then downloads the current workspace first.
+- Proposals that carry a payment link ask the analyst to confirm the link and contact email before download.
+- README and settings say to run the desk in its own browser profile (local files share browser storage).
+- Legal entities only: the offer, proposal scope and case form say so; IIN-looking numbers are refused on the offer
+  form (the field can be left blank) and need explicit confirmation in the desk. Heuristic, unverified.
+- Briefs label confirmed records "BIN match" or "name only"; the attribution note field is labelled client-facing.
+- Document request asks for IINs, ID numbers and home addresses to be redacted.
+- Overview no longer promises unconditional two-day delivery.
+- The public offer shows the seller's legal name, country and an optional terms link; export requires the first two.
+- Desk email validation matches the offer's; restored backups drop an invalid email.
+- Cyrillic company names survive in download filenames; the same file can be chosen again after a failed import.
+- mailto keeps a literal @; long requests shorten the question in the email (about 1,500 characters for a
+  2,500-character Russian question, was 31,000) and point to the request file.
+
 ## Verification limits
 
 Full browser interaction and visual checks could not be completed in this environment: no local Chromium binary was available, allowed installation attempts were blocked, and the cloud browser could not open the local app. The Node tests use a minimal DOM harness and do not prove rendering, mobile layout, native form behavior, mail-app integration, downloads, or printing in a real browser. Test the receiving-email flow and one harmless sample export in your normal browser before sharing the offer.
