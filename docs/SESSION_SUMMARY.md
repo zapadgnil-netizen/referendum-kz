@@ -55,7 +55,8 @@ M&A. Repo: `zapadgnil-netizen/referendum-kz`, branch `claude/ashyqdala-building-
 - A false merge is worse than a missed link; unsure goes to REVIEW.
 - Name-only evidence is shown but never adds to a risk score until a BIN or a person confirms it.
 - Python is the matcher's reference; `web/engine.js` must match it exactly (the parity test enforces it).
-- Next 90 days: first paying customer. Chosen direction: concierge-first, **proposed and not yet approved by you**.
+- Next 90 days: first paying customer. Chosen direction: concierge-first, **approved 2026-10-13**. The launch kit in
+  `launch/` (Partner Desk, public offer, 21-day plan) is the tooling; it was reviewed and fixed on 2026-10-13.
 
 ## Mistakes and corrections made in this session
 - The original pitch said nobody joins these records well. That was unchecked; Adata.kz and Kompra.kz already

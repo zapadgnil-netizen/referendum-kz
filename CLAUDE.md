@@ -10,6 +10,7 @@ Wedge buyer: KYB / compliance teams at foreign banks and investors. Full spec: `
 - Build the app: `python web/build.py` writes the single page `web/dist/index.html`
 - Click-through test in a real browser: `python tools/smoke.py` (needs playwright and Chromium)
 - Browser unit tests: `node --test web/tests/pipeline.test.js` (also run by pytest)
+- Build the launch kit: `python launch/build.py` writes `launch/dist/` (private desk + public offer)
 - Matcher quality gate: `PYTHONPATH=src python -m ashyqdala.evaluate data/gold/pairs.jsonl`
 
 ## Layout
@@ -19,6 +20,8 @@ Wedge buyer: KYB / compliance teams at foreign banks and investors. Full spec: `
 - `src/ashyqdala/synth.py` deterministic synthetic world (invented companies, hidden ground truth)
 - `web/` the MVP app: `engine.js` (JS port of the matcher, parity-tested against Python), `pipeline.js` (linking, flags,
   search, events), `app.js` + `app.css` (early-2000s portal UI), `build.py`, `data.json`
+- `launch/` concierge launch kit: private Partner Desk (pipeline, evidence ledger, brief export), public offer page,
+  21-day `Launch_Plan.md`. Manual research only; no data connections
 - `docs/` spec, data sources, open legal questions
 - `.claude/skills/` project skills (see below)
 
@@ -38,5 +41,6 @@ from the code and spec, not yet pressure-tested with subagents.
 
 ## Status
 Entity-resolution core, a synthetic dataset and a working browser MVP (search, reports, watchlist with a simulated
-clock, review queue, compare, matcher QA). Nothing ingests real data yet.
+clock, review queue, compare, matcher QA). Concierge-first is approved (2026-10-13); `launch/` holds the tools for
+selling and delivering hand-made briefs. Nothing ingests real data yet.
 Unverified: the BIN check-digit algorithm and BIN-vs-IIN heuristic against an official sample.

@@ -1,6 +1,6 @@
 # Handoff: everything a coding agent needs to continue Ashyq Dala
 
-Read this, then `CLAUDE.md` (rules and commands), then `docs/spec.md`. Last updated 2026-10-06.
+Read this, then `CLAUDE.md` (rules and commands), then `docs/spec.md`. Last updated 2026-10-13.
 
 ## What this is
 "Who am I dealing with?" for Kazakhstan: type a company name or BIN, get owners, affiliates, land, state
@@ -22,7 +22,11 @@ The pitch rests on Kazakhstan being a sanctions-evasion transit hub.
 - **App:** `web/app.js` + `web/app.css` + `web/template.html`, built into one file by `web/build.py`. Early-2000s
   portal look. Pages: Home, Search, Company (9 tabs), Watchlist (simulated clock), Review queue, Compare, Matcher quality,
   Help. State in localStorage with in-memory fallback.
-- **Tests:** `python -m pytest -q` (82), `python tools/smoke.py <url>` (about 50 browser checks incl. phone width),
+- **Launch kit (`launch/`):** private Partner Desk (pipeline, evidence ledger, brief and proposal export, backups),
+  public offer page, 21-day `Launch_Plan.md`, nine researched prospects. Manual research only; no data connections.
+  `python launch/build.py` writes `launch/dist/` (gitignored); `node launch/tests/core.cjs` (40 checks) also runs in pytest.
+  Reviewed 2026-10-13 (browser flows, security, rules); fixes are listed in `launch/VALIDATION.md`.
+- **Tests:** `python -m pytest -q` (84), `python tools/smoke.py <url>` (about 50 browser checks incl. phone width),
   `python tools/viewer_sim.py` (sandboxed frame, strict CSP, no storage, hashchange blocked).
 - **Published copy (private):** https://claude.ai/artifact/Pp3otgnkgSpYYhQHZhNS3Q
 - **Not real:** every company, number, case and official is invented. Nothing is connected to any real source.
@@ -36,10 +40,11 @@ The pitch rests on Kazakhstan being a sanctions-evasion transit hub.
 2. A false merge is worse than a missed link. Precision is the gate; unsure goes to REVIEW.
 3. Name-only evidence is shown but never adds to a risk score until a BIN or a person confirms it.
 4. Python is the reference for the matcher; the JS port must match it exactly.
-5. **Next 90 days: priority is the first paying customer.** Chosen approach (proposed, **not yet approved by the user**):
+5. **Next 90 days: priority is the first paying customer.** Chosen approach (**approved by the user 2026-10-13**):
    *concierge-first.* Sell one fixed-price Kazakh counterparty report, built by an analyst using public lookups by hand,
-   loaded into the tool. Automate only the lookups that repeat. Stop rule: six weeks of outreach with no paid pilot means
-   change the buyer or product before writing pipeline code. See "Brainstorm status" below.
+   loaded into the tool. Automate only the lookups that repeat. Stop rule: the stricter one in `launch/Launch_Plan.md` applies (day 14 with no
+   accepted scope or deposit, or ten qualified conversations with no paid acceptance, means change the offer or buyer)
+   before writing pipeline code. See "Brainstorm status" below.
 
 ## Why not "every company in Kazakhstan" yet
 Competitors already aggregate this ([Adata.kz](https://adata.kz/en/useful/counterparty), [Kompra.kz](https://www.bcc.kz/en/bcc-journal/business-partner-check)),
@@ -51,13 +56,15 @@ anyone pays. Details and sources: `docs/data-sources.md`. Questions for counsel:
 ## Brainstorm status (superpowers:brainstorming, in progress)
 - Done: context, chokepoints, three approaches (A wholesale via an aggregator API, B own pipeline with pull-through cache
   and event feeds, C counterparty-consented data plus bring-your-own-data matching), user priority = first paying customer.
-- Design section 1 presented (concierge-first). Waiting for the user's approval.
+- Design section 1 (concierge-first) approved 2026-10-13. The user built `launch/` independently; it covers most of
+  section 2 as a separate app.
 - If approved, section 2 is: a paste/CSV import path for records, a report export a customer can receive, and a one-page
   counterparty consent request. No scrapers. Then write the spec to
   `docs/superpowers/specs/YYYY-MM-DD-concierge-mvp-design.md`, get the user's review, then `superpowers:writing-plans`.
-- **Do not write code for this until the user approves the design.**
+- Before more concierge code, check what `launch/` already does. Do not duplicate it in `web/`.
 
 ## Next tasks, in order (after approval)
+Tasks 2 and 3 are partly covered by `launch/` (brief export; a document request for the counterparty's own extracts).
 1. Record import: paste or CSV of records (source, name, BIN, date, amount, etc.) into the app, validated, through the
    same linking pipeline. Keep the review queue.
 2. Report export: a clean report a customer can receive. The artifact viewer blocks downloads and printing, so this is
