@@ -43,7 +43,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .mark{display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--accent);font:600 15px var(--mono)}
 .side-label{font:500 10px var(--mono);letter-spacing:.08em;color:var(--muted);margin:28px 10px 8px}
 nav{display:grid;gap:2px}
-nav button{border:0;background:transparent;text-align:left;color:var(--ink-2);border-radius:var(--r);padding:8px 10px;display:flex;gap:10px;align-items:center;font-size:13px;transition:background-color .15s ease-out,color .15s ease-out}
+nav button{min-height:32px;border:0;background:transparent;text-align:left;color:var(--ink-2);border-radius:var(--r);padding:8px 10px;display:flex;gap:10px;align-items:center;font-size:13px;transition:background-color .15s ease-out,color .15s ease-out}
 nav button:hover{background:var(--surface);color:var(--ink)}
 nav button.active{background:var(--accent-soft);color:var(--ink);box-shadow:inset 0 0 0 1px oklch(0.80 0.115 205 / .35)}
 .side-bottom{margin-top:auto;padding:16px 10px 0;border-top:1px solid var(--line-soft)}
@@ -88,7 +88,7 @@ p{color:var(--ink-2)}
 .btn.danger{color:var(--bad);border-color:oklch(0.74 0.15 28 / .45);background:transparent}
 .btn.danger:hover{background:var(--bad-soft)}
 .btn.small{padding:4px 9px;font-size:12px}
-.text-button{background:none;border:0;text-decoration:underline;text-underline-offset:3px;color:var(--accent);font-size:13px;padding:0}
+.text-button{background:none;border:0;text-decoration:underline;text-underline-offset:3px;color:var(--accent);font-size:13px;padding:4px 0;min-height:24px;text-align:left}
 
 /* Panels */
 .card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:18px}
@@ -227,6 +227,10 @@ footer{border-top:1px solid var(--line-soft);padding:12px 28px;color:var(--muted
 .report-preview a{word-break:break-all;color:#315f46}
 .report-preview .stamp{padding:10px;border:2px solid #b5693a;color:#805226;margin-bottom:18px;font-family:Arial,sans-serif}
 
+.ico{flex:none;opacity:.85}
+nav button.active .ico{color:var(--accent);opacity:1}
+/* Touch screens: 44px targets and 16px fields (prevents iOS zoom on focus). */
+@media(pointer:coarse){.brand,.btn,.btn.small,nav button,.case-button,.close,.text-button{min-height:44px}.btn.small{padding:6px 12px}.text-button{display:inline-flex;align-items:center}input,textarea,select{font-size:16px;min-height:44px}input[type=checkbox]{min-height:0;width:20px;height:20px}.launch-task{padding:12px 0}.row{gap:10px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media(max-width:1150px){.sidebar{width:196px}.shell{margin-left:196px}main{padding:20px}.topbar{padding:10px 20px}.case-grid{grid-template-columns:220px minmax(0,1fr)}#toast{left:calc(50% + 98px)}}
 @media(max-width:900px){.sidebar{position:static;width:100%;padding:12px 16px;border-right:0;border-bottom:1px solid var(--line-soft)}.app{display:block}.sidebar nav{display:flex;overflow-x:auto;gap:4px;margin-top:10px}.sidebar nav button{white-space:nowrap;padding:6px 10px;font-size:12px}.side-label,.side-bottom{display:none}.shell{margin-left:0}.topbar{position:static}.home-grid,.settings-grid,.split{grid-template-columns:minmax(0,1fr)}.case-grid{grid-template-columns:1fr}.case-list{flex-direction:row;overflow-x:auto}.case-button{min-width:200px}.launch-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr 1fr}#toast{left:50%}}
